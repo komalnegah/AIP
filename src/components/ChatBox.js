@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import "./Chatbox.css"; // Ensure this CSS file exists
+import "./Chatbox.css";
+import { FaPaperPlane } from 'react-icons/fa';
+
+
 
 const ChatBox = () => {
   const [input, setInput] = useState("");
@@ -7,7 +10,6 @@ const ChatBox = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const requestBody = { input };
 
     try {
@@ -31,24 +33,24 @@ const ChatBox = () => {
   };
 
   return (
-    <div className="chat-box">
-      
-      {/* Display response from the backend */}
-      <div className="response-container">
-        {response && <p className="bot-response">{response}</p>}
+    <div className="chat-box-container">
+      <div className="chat-box">
+        <div className="response-container">
+          {response && <p className="bot-response">{response}</p>}
+        </div>
+        <form onSubmit={handleSubmit} className="chat-input">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask a financial question..."
+            required
+          />
+         <button type="submit" className="send-button">
+                    <FaPaperPlane />
+                </button>
+        </form>
       </div>
-
-      {/* Input Field and Submit Button */}
-      <form onSubmit={handleSubmit} className="chat-input">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask a financial question..."
-          required
-        />
-        <button type="submit">Send</button>
-      </form>
     </div>
   );
 };

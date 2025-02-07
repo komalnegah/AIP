@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Avatar, Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
+import { Avatar, Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material"; // Remove DialogActions and Button
+import { Close } from "@mui/icons-material"; // Import Close icon
 import ChatHistory from "./ChatHistory";
 
 const Sidebar = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);  // State to control modal
+  const [isDialogOpen, setIsDialogOpen] = useState(false); // State to control modal
   const [selectedCompanies, setSelectedCompanies] = useState([]);
 
   const handleDialogOpen = () => {
@@ -16,12 +17,14 @@ const Sidebar = () => {
 
   const handleCompanySelect = (company) => {
     setSelectedCompanies((prev) => {
-      // Toggle company in the list
+      // If the company is already selected, remove it
       if (prev.includes(company)) {
         return prev.filter((item) => item !== company);
-      } else {
+      } else if (prev.length < 4) {
+        // Add the company only if the limit of 4 companies has not been reached
         return [...prev, company];
       }
+      return prev; // If limit is reached, don't add the company
     });
   };
 
@@ -33,92 +36,54 @@ const Sidebar = () => {
       </div>
 
       <div className="favorites">
-        <h4 onClick={handleDialogOpen}>⭐ Favorite Companies</h4>
+        <h4 onClick={handleDialogOpen}> Select Companies</h4>
         <ul>
           {selectedCompanies.length === 0 ? (
-            <li></li>
+            <li>No companies selected</li>
           ) : (
             selectedCompanies.map((company, index) => <li key={index}>{company} ⭐</li>)
           )}
         </ul>
       </div>
-
+<br></br>
       <div className="chat-history">
         <ChatHistory />
       </div>
 
       {/* Dialog to select favorite companies */}
       <Dialog open={isDialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>Select Favorite Companies</DialogTitle>
+        <DialogTitle>
+          <div className="dialog-header">
+            <h3>⭐ Choose your favorites</h3>
+           
+            <br />
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleDialogClose}
+              aria-label="close"
+              sx={{ position: "absolute", right: 8, top: 8 }}
+            >
+              <Close />
+            </IconButton>
+          </div>
+        </DialogTitle>
         <DialogContent>
-          <ul>
-            <li>
-              <label>
+          <div className="company-list">
+            {["Apple", "Microsoft", "Tesla", "Amazon", "Google", "Meta"].map((company) => (
+              <div className="company-item" key={company}>
                 <input
                   type="checkbox"
-                  checked={selectedCompanies.includes("Apple")}
-                  onChange={() => handleCompanySelect("Apple")}
+                  checked={selectedCompanies.includes(company)}
+                  onChange={() => handleCompanySelect(company)}
+                  id={company.toLowerCase()}
+                  disabled={selectedCompanies.length >= 4 && !selectedCompanies.includes(company)} // Disable if 4 companies are selected
                 />
-                Apple
-              </label>
-            </li>
-            <li>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={selectedCompanies.includes("Microsoft")}
-                  onChange={() => handleCompanySelect("Microsoft")}
-                />
-                Microsoft
-              </label>
-            </li>
-            <li>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={selectedCompanies.includes("Tesla")}
-                  onChange={() => handleCompanySelect("Tesla")}
-                />
-                Tesla
-              </label>
-            </li>
-            <li>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={selectedCompanies.includes("Amazon")}
-                  onChange={() => handleCompanySelect("Amazon")}
-                />
-                Amazon
-              </label>
-            </li>
-            <li>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={selectedCompanies.includes("Google")}
-                  onChange={() => handleCompanySelect("Google")}
-                />
-                Google
-              </label>
-            </li>
-            <li>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={selectedCompanies.includes("Meta")}
-                  onChange={() => handleCompanySelect("Meta")}
-                />
-                Meta
-              </label>
-            </li>
-          </ul>
+                <label htmlFor={company.toLowerCase()}>{company}</label>
+              </div>
+            ))}
+          </div>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
       </Dialog>
     </div>
   );

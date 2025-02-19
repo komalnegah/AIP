@@ -256,7 +256,7 @@ button.absolute.right-2.top-1\/2.transform.-translate-y-1\/2 {
   width: 42px;
   cursor: pointer;
   position: absolute;
-  right: 270px;
+  right: 240px;
 }
 .active
  { color: yellow; 
